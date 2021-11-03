@@ -19,7 +19,11 @@ module Simpler
       send(action)
       write_response
 
-      @response.finish
+      #@response.finish
+    end
+
+    def set_params(keys, values)
+      keys.each_index { |index| params[keys[index]] = values[index] }
     end
 
     private
@@ -47,7 +51,21 @@ module Simpler
     end
 
     def render(template)
-      @request.env['simpler.template'] = template
+      #@request.env['simpler.template'] = template
+      if template.is_a? String
+        @request.env['simpler.template'] = template
+      else
+        @request.env['simpler.template'] = 'inline'
+        @request.env['simpler.plain'] = template[:plain]
+      end
+    end
+
+    def status(status)
+      @response.status = status
+    end
+
+    def headers
+      @response
     end
 
   end

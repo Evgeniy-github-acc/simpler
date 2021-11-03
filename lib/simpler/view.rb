@@ -10,12 +10,19 @@ module Simpler
     end
 
     def render(binding)
-      template = File.read(template_path)
-
-      ERB.new(template).result(binding)
+      if template_inline?
+        @env['simpler.plain']
+      else
+        template = File.read(template_path)
+        ERB.new(template).result(binding)
+      end
     end
 
     private
+
+    def template_inline?
+      @env['simpler.template'] == 'inline'
+    end
 
     def controller
       @env['simpler.controller']
@@ -32,6 +39,7 @@ module Simpler
     def template_path
       path = template || [controller.name, action].join('/')
 
+      @env['simpler.template'] = path
       Simpler.root.join(VIEW_BASE_PATH, "#{path}.html.erb")
     end
 

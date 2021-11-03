@@ -1,0 +1,14 @@
+I, [2021-11-03T10:17:59.017124 #137476]  INFO -- : 
+Request:    GET /tests
+       Handler:    TestsController#index
+       Parameters: {}
+       Response:   200
+                   text/html
+                   tests/index.html.erb
+I, [2021-11-03T10:20:15.647221 #137476]  INFO -- : 
+Request:    GET /tests/101
+       Handler:    TestsController#index
+       Parameters: {}
+       Response:   200
+                   text/html
+                   tests/index.html.erb

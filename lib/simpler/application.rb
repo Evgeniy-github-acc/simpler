@@ -9,7 +9,7 @@ module Simpler
 
     include Singleton
 
-    attr_reader :db
+    attr_reader :db, :router, :controller
 
     def initialize
       @router = Router.new
@@ -28,10 +28,8 @@ module Simpler
 
     def call(env)
       route = @router.route_for(env)
-      controller = route.controller.new(env)
-      action = route.action
 
-      make_response(controller, action)
+      route_exist?(route) ? valid_route(route, env) : invalid_route
     end
 
     private
@@ -42,6 +40,22 @@ module Simpler
 
     def require_routes
       require Simpler.root.join('config/routes')
+    end
+
+    def route_exist?(route)
+      !route.nil?
+    end
+
+    def valid_route(route, env)
+      @controller = route.controller.new(env)
+      @controller.set_params(route.params_keys, route.params_values)
+      action = route.action
+
+      make_response(controller, action)        
+    end
+
+    def invalid_route
+      Rack::Response.new('Page not found', 404, { 'Content-Type' => 'text/plain' }).finish  
     end
 
     def setup_database
